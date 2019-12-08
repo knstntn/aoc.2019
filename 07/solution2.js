@@ -7,23 +7,15 @@
     async function calculateMaxSignal(instructions, phases) {
         let max = 0;
         const compute = (instructions, inputs, outputs) => {
-            // console.log('-------------', inputs, outputs);
             return runVirtualMachine([...instructions], {
-                readFromInput: () => {
-                    if (inputs.length) return inputs.shift();
-                    return undefined;
-                },
-                writeToInput: (value) => {
-                    outputs.push(value);
-                    // console.log('----------', outputs);
-                },
+                readFromInput: () => inputs.shift(),
+                writeToInput: (value) => outputs.push(value),
             });
         };
 
         for (const phaseSettingSequence of heapsPermutations(phases)) {
-            // console.log('------------', phaseSettingSequence);
             const params = phaseSettingSequence.map((value, index) => {
-                if(index === 0) return [value, 0];
+                if (index === 0) return [value, 0];
 
                 return [value]
             });
@@ -51,7 +43,6 @@
     }
 
     function parseCommand(n) {
-        // console.log('>>', n);
         const s = n.toString();
         const opCode = Number(s.substring(s.length - 2));
         const modes = [];
@@ -70,8 +61,6 @@
                 const cmd = parseCommand(n[i]);
                 let j = 0;
 
-                // console.log('>>', n[i], cmd, cmd.modes[3]);
-
                 if (cmd.opCode === 1) {
                     const left = readFromInstructions(n, ++i, cmd.modes[j++]);
                     const right = readFromInstructions(n, ++i, cmd.modes[j++]);
@@ -85,12 +74,10 @@
                     if (value != null) {
                         n[n[++i]] = value;
                     } else {
-                        // console.log(n, i);
                         await new Promise(resolve => process.nextTick(resolve));
                         continue;
                     }
                 } else if (cmd.opCode === 4) {
-                    // console.log('>>> wti', n[n[i + 1]]);
                     writeToInput(n[n[++i]]);
                 } else if (cmd.opCode === 5) {
                     if (readFromInstructions(n, ++i, cmd.modes[j++]) !== 0) {
@@ -117,7 +104,6 @@
                     const value = left === right ? 1 : 0;
                     writeToInstructions(n, ++i, value, cmd.modes[j++]);
                 } else if (cmd.opCode === 99) {
-                    // console.log('>>> done');
                     resolve();
                     break;
                 }
@@ -126,8 +112,7 @@
                 i++;
             }
             return n;
-
-        })
+        });
     }
 
     function readFromInstructions(n, i, mode) {
