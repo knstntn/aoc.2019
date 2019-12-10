@@ -26,9 +26,7 @@
         distance: Math.hypot(l.x - a.x, l.y - a.y),
         angle: Math.atan2(a.y - l.y, a.x - l.x) * (180 / Math.PI),
       };
-    }).sort((a, b) => {
-      return (a.angle - b.angle) || (a.distance - b.distance);
-    });
+    }).sort((a, b) => a.angle - b.angle);
 
     // console.log(targets);
 
