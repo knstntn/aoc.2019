@@ -17,7 +17,7 @@
 
   const map = new Map();
   let robot_op = OP_COLORIFY
-  const robot = { x: 0, y: 0, c: WHITE, d: DIR_UP };
+  const robot = { x: 0, y: 0, d: DIR_UP };
   const sizes = { x: { min: 0, max: 0 }, y: { min: 0, max: 0 } };
 
   async function run(input) {
@@ -26,15 +26,13 @@
       readFromInput: () => {
         if (!map.has(pointToString(robot))) {
           map.set(pointToString(robot), WHITE);
-
         }
         return map.get(pointToString(robot));
       },
       writeToInput: (value) => {
         if (robot_op === OP_COLORIFY) {
-          robot.c = value;
+          map.set(pointToString(robot), value);
           robot_op = OP_TURN;
-          map.set(pointToString(robot), robot.c);
         } else if (robot_op === OP_TURN) {
           moveRobot(value);
           robot_op = OP_COLORIFY;
