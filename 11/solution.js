@@ -17,7 +17,7 @@
 
   const map = new Map();
   let robot_op = OP_COLORIFY
-  const robot = { x: 0, y: 0, c: BLACK, d: DIR_UP };
+  const robot = { x: 0, y: 0, c: WHITE, d: DIR_UP };
   const sizes = { x: { min: 0, max: 0 }, y: { min: 0, max: 0 } };
 
   async function run(input) {
@@ -25,7 +25,7 @@
     await vm.runVirtualMachine(instructions, {
       readFromInput: () => {
         if (!map.has(pointToString(robot))) {
-          map.set(pointToString(robot), BLACK);
+          map.set(pointToString(robot), WHITE);
 
         }
         return map.get(pointToString(robot));
@@ -42,6 +42,18 @@
       },
     });
     console.log('>>>', map.size, sizes);
+    checkMessage()
+  }
+
+  function checkMessage() {
+    for (let y = sizes.y.max; y >= sizes.y.min; y--) {
+      let line = ''
+      for (let x = sizes.x.max; x >= sizes.x.min; x--) {
+        const color = map.get(pointToString({ x, y })) || BLACK;
+        line = (color === BLACK ? ' ' : '@') + line;
+      }
+      console.log(line);
+    }
   }
 
   function moveRobot(value) {
