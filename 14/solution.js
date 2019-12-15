@@ -1,35 +1,6 @@
 (() => {
-  function run(input, answer) {
-    const a1 = part1(input)
-    console.log('>>>', a1, answer, a1 === answer);
-  }
-
-  function part1(input) {
+  function part1(input, answer) {
     const ingredients = getInputIngredients(input);
-    // console.log('>>>', ingredients);
-    return produce(ingredients);
-  }
-
-  function getInputIngredients(input) {
-    const { readFileSync } = require('fs');
-    const ingredients = {};
-    readFileSync(input).toString().split("\r\n").map(line => {
-      if (!line) return;
-      const [left, right] = line.split("=>").map(x => x.trim());
-      const [amount, name] = right.split(' ').map(x => x.trim());
-      ingredients[name.toUpperCase()] = {
-        amount: Number(amount),
-        deps: left.split(',').map(x => x.trim()).reduce((acc, d) => {
-          const [amount, name] = d.split(' ').map(x => x.trim());
-          acc[name.toUpperCase()] = Number(amount);
-          return acc;
-        }, {})
-      };
-    });
-    return ingredients;
-  }
-
-  function produce(ingredients) {
     const storage = {};
     const stack = [];
     const putDepsOnStack = (name) => {
@@ -61,13 +32,33 @@
 
       putDepsOnStack(name);
     }
-    return ore;
+
+    console.log('>>', ore, answer, ore === answer);
   }
 
-  run('input1', 31);
-  run('input2', 165);
-  run('input3', 13312);
-  run('input4', 180697);
-  run('input5', 2210736);
-  run('puzzle');
+  function getInputIngredients(input) {
+    const { readFileSync } = require('fs');
+    const ingredients = {};
+    readFileSync(input).toString().split("\r\n").map(line => {
+      if (!line) return;
+      const [left, right] = line.split("=>").map(x => x.trim());
+      const [amount, name] = right.split(' ').map(x => x.trim());
+      ingredients[name.toUpperCase()] = {
+        amount: Number(amount),
+        deps: left.split(',').map(x => x.trim()).reduce((acc, d) => {
+          const [amount, name] = d.split(' ').map(x => x.trim());
+          acc[name.toUpperCase()] = Number(amount);
+          return acc;
+        }, {})
+      };
+    });
+    return ingredients;
+  }
+
+  part1('input1', 31);
+  part1('input2', 165);
+  part1('input3', 13312);
+  part1('input4', 180697);
+  part1('input5', 2210736);
+  part1('puzzle');
 })();
