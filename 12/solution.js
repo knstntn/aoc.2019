@@ -6,6 +6,7 @@
     console.log('>>>', await part2(moons));
   }
 
+  // just brute force calculation
   function part1(moons, steps) {
     let i = 1;
     while (i <= steps) {
@@ -17,6 +18,8 @@
     return computeTotalEnergy(moons);
   }
 
+  // checking for periodicity of x, y, z coods and looking for lcm
+  // inspired by reddit comments :(
   async function part2(moons) {
     const initial = moons.map(x => ({ ...x }));
     const computeDistance = (coord) => new Promise(resolve => {
